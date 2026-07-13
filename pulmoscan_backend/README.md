@@ -21,7 +21,7 @@ API de detección automatizada de tuberculosis pulmonar mediante análisis de ra
    - Rellena con tus credenciales de PostgreSQL
 
 4. Descarga los modelos y colócalos en la carpeta models/:
-   https://drive.google.com/drive/folders/1t7I8jWKb2lZu3hEdNXc8GS_H4yCpP_PH
+   https://drive.google.com/drive/folders/1t7I8jWKb2lZu3hEdNXc8GS_H4yCpP_PH?usp=sharing
 
    Archivos necesarios:
    - densenet_169_tb_best.pt
