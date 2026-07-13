@@ -1,0 +1,217 @@
+<app-navbar />
+
+<main class="historial" (click)="cerrarMenu()">
+
+  <div class="historial__layout">
+
+    <!-- PANEL IZQUIERDO: preview -->
+    <aside class="panel-preview">
+        <h2 class="seccion-titulo">VISTA PREVIA</h2>
+        <div class="rx-caja">
+            @if (cargandoImagen()) {
+            <div class="rx-spinner">
+                <svg viewBox="0 0 24 24" width="32" height="32" fill="none" class="spin">
+                <circle cx="12" cy="12" r="10" stroke="#DDE3F0" stroke-width="2"/>
+                <path d="M12 2a10 10 0 0 1 10 10" stroke="#0A1F5C" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </div>
+            } @else if (imagenPreviewUrl()) {
+            <img [src]="imagenPreviewUrl()!" alt="Radiografía" class="rx-imagen">
+            } @else {
+            <div class="rx-vacio">
+                <svg viewBox="0 0 24 24" width="44" height="44" fill="none">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="#C5CDE0" stroke-width="1.5"/>
+                <circle cx="12" cy="12" r="3" stroke="#C5CDE0" stroke-width="1.5"/>
+                </svg>
+                <p>Presiona el ojo<br>para ver la radiografía</p>
+            </div>
+            }
+        </div>
+
+        @if (seleccionadoId()) {
+            <button class="btn-detalles" (click)="irADetalles(seleccionadoId()!, $event)">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none">
+                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/>
+                <path d="M12 11v5m0-8h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Más detalles
+            </button>
+        }
+    </aside>
+    <!-- PANEL DERECHO: tabla -->
+    <section class="panel-tabla">
+      <div class="tabla-head">
+        <h2 class="seccion-titulo">ANÁLISIS REALIZADOS</h2>
+        <div class="filtros">
+          <button class="filtro-btn"
+                  [class.filtro-btn--activo]="filtro() === 'TODOS'"
+                  (click)="filtro.set('TODOS')">Todos</button>
+          <button class="filtro-btn filtro-btn--tb"
+                  [class.filtro-btn--activo]="filtro() === 'TB'"
+                  (click)="filtro.set('TB')">TB+</button>
+          <button class="filtro-btn filtro-btn--normal"
+                  [class.filtro-btn--activo]="filtro() === 'NORMAL'"
+                  (click)="filtro.set('NORMAL')">Normal</button>
+        </div>
+      </div>
+
+      <div class="tabla-wrap">
+        @if (cargando()) {
+          <div class="tabla-estado">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" class="spin">
+              <circle cx="12" cy="12" r="10" stroke="#DDE3F0" stroke-width="2"/>
+              <path d="M12 2a10 10 0 0 1 10 10" stroke="#0A1F5C" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <p>Cargando historial…</p>
+          </div>
+        } @else if (error()) {
+          <div class="tabla-estado tabla-estado--error">
+            <p>{{ error() }}</p>
+            <button class="btn-reintentar" (click)="cargarEstudios()">Reintentar</button>
+          </div>
+        } @else if (estudiosFiltered().length === 0) {
+          <div class="tabla-estado">
+            <p>No hay análisis registrados.</p>
+          </div>
+        } @else {
+          <table class="tabla">
+            <thead>
+              <tr>
+                <th>Paciente</th>
+                <th>Fecha</th>
+                <th>Resultado</th>
+                <th>Probabilidad</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (e of estudiosFiltered(); track e.id) {
+                <tr class="fila"
+                    [class.fila--seleccionada]="seleccionadoId() === e.id">
+
+                  <td class="col-paciente">
+                    <div class="paciente-info">
+                      <span class="paciente-avatar">
+                        {{ nombrePaciente(e).charAt(0) }}
+                      </span>
+                      <span class="paciente-nombre">{{ nombrePaciente(e) }}</span>
+                    </div>
+                  </td>
+
+                  <td class="col-fecha">
+                    <span class="fecha-dia">{{ formatFecha(e.fecha_carga) }}</span>
+                    <span class="fecha-hora">{{ formatHora(e.fecha_carga) }}</span>
+                  </td>
+
+                  <td class="col-resultado">
+                    @if (e.resultado) {
+                      <span class="badge-resultado"
+                            [class.badge-resultado--tb]="e.resultado.label === 'TB'"
+                            [class.badge-resultado--normal]="e.resultado.label === 'NORMAL'">
+                        {{ e.resultado.label === 'TB' ? 'TB+' : 'Normal' }}
+                      </span>
+                    } @else {
+                      <span class="sin-resultado">—</span>
+                    }
+                  </td>
+
+                  <td class="col-prob">
+                    @if (e.resultado) {
+                      <div class="prob-mini">
+                        <div class="prob-mini__barra">
+                          <div class="prob-mini__fill"
+                               [class.prob-mini__fill--tb]="e.resultado.label === 'TB'"
+                               [class.prob-mini__fill--normal]="e.resultado.label === 'NORMAL'"
+                               [style.width.%]="probPorcentaje(e.resultado.prob_tb)">
+                          </div>
+                        </div>
+                        <span class="prob-mini__valor"
+                              [class.texto--tb]="e.resultado.label === 'TB'"
+                              [class.texto--normal]="e.resultado.label === 'NORMAL'">
+                          {{ probPorcentaje(e.resultado.prob_tb) }}%
+                        </span>
+                      </div>
+                    }
+                  </td>
+
+                  <td class="col-acciones" (click)="$event.stopPropagation()">
+                    <div class="acciones">
+
+                      <!-- Botón ojo -->
+                      <button class="btn-accion btn-ojo"
+                              [class.btn-ojo--abierto]="seleccionadoId() === e.id"
+                              [title]="seleccionadoId() === e.id ? 'Cerrar vista previa' : 'Ver radiografía'"
+                              (click)="toggleOjo(e, $event)">
+                        @if (seleccionadoId() === e.id) {
+                          <!-- Ojo abierto -->
+                          <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+                                  stroke="currentColor" stroke-width="2"/>
+                            <circle cx="12" cy="12" r="3"
+                                    stroke="currentColor" stroke-width="2"/>
+                          </svg>
+                        } @else {
+                          <!-- Ojo cerrado -->
+                          <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
+                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"
+                                  stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <line x1="1" y1="1" x2="23" y2="23"
+                                  stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                          </svg>
+                        }
+                      </button>
+
+                      <!-- Botón menú (3 puntos) -->
+                      <div class="menu-wrap">
+                        <button class="btn-accion btn-menu"
+                                [class.btn-menu--abierto]="menuAbiertoId() === e.id"
+                                title="Más opciones"
+                                (click)="toggleMenu(e.id, $event)">
+                          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                            <circle cx="12" cy="5" r="1.5"/>
+                            <circle cx="12" cy="12" r="1.5"/>
+                            <circle cx="12" cy="19" r="1.5"/>
+                          </svg>
+                        </button>
+
+                        @if (menuAbiertoId() === e.id) {
+                            <div class="dropdown">
+                                <button class="dropdown__item" (click)="irADetalles(e.id, $event)">
+                                <svg viewBox="0 0 24 24" width="15" height="15" fill="none">
+                                    <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/>
+                                    <path d="M12 11v5m0-8h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                                Más detalles
+                                </button>
+                                <button class="dropdown__item dropdown__item--danger" (click)="eliminar(e.id, $event)">
+                                <svg viewBox="0 0 24 24" width="15" height="15" fill="none">
+                                    <polyline points="3 6 5 6 21 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    <path d="M19 6l-1 14H6L5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M10 11v6m4-6v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    <path d="M9 6V4h6v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                Eliminar
+                                </button>
+                                <button class="dropdown__item" (click)="descargarPDF(e.id, $event)">
+                                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none">
+                                        <path d="M12 3v12m0 0-4-4m4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    </svg>
+                                    Descargar PDF
+                                </button>
+                            </div>
+                        }
+                      </div>
+
+                    </div>
+                  </td>
+
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      </div>
+    </section>
+  </div>
+</main>

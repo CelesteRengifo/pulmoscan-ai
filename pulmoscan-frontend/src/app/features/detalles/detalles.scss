@@ -1,0 +1,213 @@
+.detalles {
+  min-height: calc(100vh - 64px);
+  background: #F0F4F8;
+  padding: 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  &__titulo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    h1 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #0A1F5C;
+    }
+  }
+}
+
+.btn-volver {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: white;
+  border: 1.5px solid #DDE3F0;
+  color: #2D3748;
+  padding: 0.55rem 1rem;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+
+  &:hover {
+    background: #F0F4F8;
+    border-color: #6B7A99;
+  }
+}
+
+.badge-estado {
+  padding: 0.35rem 0.9rem;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+
+  &--tb {
+    background: #FDEDEB;
+    color: #C0392B;
+    border: 1.5px solid #F5CBC5;
+  }
+
+  &--normal {
+    background: #E9F7EF;
+    color: #1A7A4A;
+    border: 1.5px solid #C9EAD8;
+  }
+}
+
+/* ---------- Estado central ---------- */
+.estado-central {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 400px;
+  color: #6B7A99;
+  font-size: 0.9rem;
+}
+
+.spinner-grande {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #DDE3F0;
+  border-top-color: #0A1F5C;
+  border-radius: 50%;
+  animation: girar 0.8s linear infinite;
+}
+
+@keyframes girar { to { transform: rotate(360deg); } }
+
+/* ---------- Grilla imágenes ---------- */
+.imagenes-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.imagen-card {
+  background: white;
+  border-radius: 14px;
+  border: 1px solid #DDE3F0;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(10, 31, 92, 0.05);
+
+  &__label {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #6B7A99;
+    border-bottom: 1px solid #DDE3F0;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  img {
+    width: 100%;
+    height: 280px;
+    object-fit: contain;
+    display: block;
+    background: #0d1117;
+  }
+}
+
+/* ---------- Métricas ---------- */
+.metricas {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+
+  &__grupo {
+    background: white;
+    border-radius: 14px;
+    border: 1px solid #DDE3F0;
+    padding: 1.25rem;
+    box-shadow: 0 2px 8px rgba(10, 31, 92, 0.05);
+  }
+
+  &__titulo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: #6B7A99;
+    margin-bottom: 1rem;
+  }
+
+  &__cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+}
+
+.metrica-card {
+  background: #F8FAFD;
+  border: 1px solid #DDE3F0;
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  &__label {
+    font-size: 0.75rem;
+    color: #6B7A99;
+    font-weight: 500;
+  }
+
+  &__valor {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0A1F5C;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+}
+
+.valor--tb     { color: #C0392B; }
+.valor--normal { color: #1A7A4A; }
+
+/* ---------- Interpretación ---------- */
+.interpretacion {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  line-height: 1.6;
+
+  p { margin: 0; }
+
+  &--tb {
+    background: #FDEDEB;
+    color: #C0392B;
+    border: 1px solid #F5CBC5;
+  }
+
+  &--normal {
+    background: #E9F7EF;
+    color: #1A7A4A;
+    border: 1px solid #C9EAD8;
+  }
+}

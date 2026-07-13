@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.pyc
+*.pt
+*.pth
+pulmoscan_backend/models/
+pulmoscan_backend/static/estudios/
+pulmoscan_backend/.env
+venv/
+
+# Node
+pulmoscan-frontend/node_modules/
+pulmoscan-frontend/dist/
+pulmoscan-frontend/.angular/

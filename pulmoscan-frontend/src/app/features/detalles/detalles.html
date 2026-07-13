@@ -1,0 +1,504 @@
+<app-navbar />
+
+<main class="detalles">
+
+  <!-- Encabezado -->
+  <div class="detalles__header">
+    <button
+      class="btn-volver"
+      type="button"
+      (click)="volver()"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        width="16"
+        height="16"
+        fill="none"
+      >
+        <path
+          d="M19 12H5m0 0 7 7m-7-7 7-7"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+
+      Volver
+    </button>
+
+    <div class="detalles__titulo">
+      <h1>Detalles del Diagnóstico</h1>
+
+      @if (resultado; as resultadoActual) {
+        <span
+          class="badge-estado"
+          [class.badge-estado--tb]="resultadoActual.label === 'TB'"
+          [class.badge-estado--normal]="resultadoActual.label === 'NORMAL'"
+        >
+          {{ resultadoActual.label === 'TB' ? 'TB Positivo' : 'Normal' }}
+        </span>
+      }
+    </div>
+  </div>
+
+  <!-- Cargando -->
+  @if (cargando()) {
+    <div class="estado-central">
+      <div class="spinner-grande"></div>
+      <p>Cargando información del estudio...</p>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (error()) {
+    <div class="estado-central">
+      <svg
+        viewBox="0 0 24 24"
+        width="48"
+        height="48"
+        fill="none"
+      >
+        <circle
+          cx="12"
+          cy="12"
+          r="9"
+          stroke="#C0392B"
+          stroke-width="1.5"
+        />
+
+        <path
+          d="M12 8v4m0 4h.01"
+          stroke="#C0392B"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
+      </svg>
+
+      <p>{{ error() }}</p>
+    </div>
+  }
+
+  @if (!cargando() && !error()) {
+    @if (estudio(); as estudioActual) {
+
+      <!-- Imágenes -->
+      <section class="imagenes-grid">
+
+        <div class="imagen-card">
+          <div class="imagen-card__label">
+            <svg
+              viewBox="0 0 24 24"
+              width="14"
+              height="14"
+              fill="none"
+            >
+              <rect
+                x="3"
+                y="3"
+                width="18"
+                height="18"
+                rx="2"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+
+              <circle
+                cx="9"
+                cy="9"
+                r="2"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+
+              <path
+                d="m21 15-4-4-10 10"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+
+            Original
+          </div>
+
+          @if (imagenes(); as imagenesActuales) {
+            <img
+              [src]="imagenesActuales.original"
+              alt="Radiografía original"
+            />
+          }
+        </div>
+
+        <div class="imagen-card">
+          <div class="imagen-card__label">
+            <svg
+              viewBox="0 0 24 24"
+              width="14"
+              height="14"
+              fill="none"
+            >
+              <path
+                d="M12 3v1m0 16v1M3 12h1m16 0h1M5.6 5.6l.7.7m11.4-.7-.7.7M5.6 18.4l.7-.7m11.4.7-.7-.7"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+
+              <circle
+                cx="12"
+                cy="12"
+                r="4"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+            </svg>
+
+            CLAHE
+          </div>
+
+          @if (imagenes(); as imagenesActuales) {
+            <img
+              [src]="imagenesActuales.clahe"
+              alt="Imagen procesada con CLAHE"
+            />
+          }
+        </div>
+
+        <div class="imagen-card">
+          <div class="imagen-card__label">
+            <svg
+              viewBox="0 0 24 24"
+              width="14"
+              height="14"
+              fill="none"
+            >
+              <path
+                d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+
+              <path
+                d="M8 12c0-2.2 1.8-4 4-4s4 1.8 4 4-1.8 4-4 4-4-1.8-4-4z"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+            </svg>
+
+            Segmentación U-Net
+          </div>
+
+          @if (imagenes(); as imagenesActuales) {
+            <img
+              [src]="imagenesActuales.segmentacion"
+              alt="Segmentación pulmonar"
+            />
+          }
+        </div>
+
+        <div class="imagen-card">
+          <div class="imagen-card__label">
+            <svg
+              viewBox="0 0 24 24"
+              width="14"
+              height="14"
+              fill="none"
+            >
+              <path
+                d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linejoin="round"
+              />
+            </svg>
+
+            Score-CAM
+          </div>
+
+          @if (imagenes(); as imagenesActuales) {
+            <img
+              [src]="imagenesActuales.scorecam"
+              alt="Mapa de activación Score-CAM"
+            />
+          }
+        </div>
+
+      </section>
+
+      <!-- Métricas -->
+      <section class="metricas">
+
+        <div class="metricas__grupo">
+          <h3 class="metricas__titulo">
+            <svg
+              viewBox="0 0 24 24"
+              width="15"
+              height="15"
+              fill="none"
+            >
+              <path
+                d="M9 12l2 2 4-4"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+
+              <circle
+                cx="12"
+                cy="12"
+                r="9"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+            </svg>
+
+            Resultado del modelo
+          </h3>
+
+          <div class="metricas__cards">
+
+            <div class="metrica-card">
+              <span class="metrica-card__label">
+                Diagnóstico
+              </span>
+
+              @if (resultado; as resultadoActual) {
+                <span
+                  class="metrica-card__valor"
+                  [class.valor--tb]="resultadoActual.label === 'TB'"
+                  [class.valor--normal]="resultadoActual.label === 'NORMAL'"
+                >
+                  {{ resultadoActual.label === 'TB' ? 'TB Positivo' : 'Normal' }}
+                </span>
+              } @else {
+                <span class="metrica-card__valor">—</span>
+              }
+            </div>
+
+            <div class="metrica-card">
+              <span class="metrica-card__label">
+                Probabilidad TB
+              </span>
+
+              <span class="metrica-card__valor valor--tb">
+                {{ probabilidadTB }}%
+              </span>
+            </div>
+
+            <div class="metrica-card">
+              <span class="metrica-card__label">
+                Probabilidad Normal
+              </span>
+
+              <span class="metrica-card__valor valor--normal">
+                {{ probabilidadNormal }}%
+              </span>
+            </div>
+
+            <div class="metrica-card">
+              <span class="metrica-card__label">
+                Nivel de confianza
+              </span>
+
+              @if (resultado; as resultadoActual) {
+                <span class="metrica-card__valor">
+                  {{ resultadoActual.nivel_confianza | titlecase }}
+                </span>
+              } @else {
+                <span class="metrica-card__valor">—</span>
+              }
+            </div>
+
+            <div class="metrica-card">
+              <span class="metrica-card__label">
+                Umbral de decisión
+              </span>
+
+              @if (resultado; as resultadoActual) {
+                <span class="metrica-card__valor">
+                  {{ resultadoActual.threshold }}
+                </span>
+              } @else {
+                <span class="metrica-card__valor">—</span>
+              }
+            </div>
+
+            <div class="metrica-card">
+              <span class="metrica-card__label">
+                Tiempo de inferencia
+              </span>
+
+              @if (resultado; as resultadoActual) {
+                <span class="metrica-card__valor">
+                  {{
+                    resultadoActual.tiempo_procesamiento_ms?.toFixed(0) ?? '—'
+                  }}
+                  ms
+                </span>
+              } @else {
+                <span class="metrica-card__valor">—</span>
+              }
+            </div>
+
+          </div>
+        </div>
+
+        <div class="metricas__grupo">
+          <h3 class="metricas__titulo">
+            <svg
+              viewBox="0 0 24 24"
+              width="15"
+              height="15"
+              fill="none"
+            >
+              <rect
+                x="2"
+                y="3"
+                width="20"
+                height="14"
+                rx="2"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+
+              <path
+                d="M8 21h8m-4-4v4"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+
+            Técnico
+          </h3>
+
+          <div class="metricas__cards">
+
+            <div class="metrica-card">
+              <span class="metrica-card__label">
+                Backbone
+              </span>
+
+              @if (resultado; as resultadoActual) {
+                <span class="metrica-card__valor">
+                  {{ resultadoActual.backbone ?? '—' }}
+                </span>
+              } @else {
+                <span class="metrica-card__valor">—</span>
+              }
+            </div>
+
+            <div class="metrica-card">
+              <span class="metrica-card__label">
+                Resolución entrada
+              </span>
+
+              @if (resultado; as resultadoActual) {
+                <span class="metrica-card__valor">
+                  {{ resultadoActual.resolucion_entrada_modelo ?? '—' }}
+                </span>
+              } @else {
+                <span class="metrica-card__valor">—</span>
+              }
+            </div>
+
+            <div class="metrica-card">
+              <span class="metrica-card__label">
+                Enhancement
+              </span>
+
+              @if (resultado; as resultadoActual) {
+                <span class="metrica-card__valor">
+                  {{ resultadoActual.enhancement_mode ?? '—' }}
+                </span>
+              } @else {
+                <span class="metrica-card__valor">—</span>
+              }
+            </div>
+
+            <div class="metrica-card">
+              <span class="metrica-card__label">
+                Segmentación usada
+              </span>
+
+              @if (resultado; as resultadoActual) {
+                <span class="metrica-card__valor">
+                  {{ resultadoActual.segmentacion_usada ? 'Sí' : 'No' }}
+                </span>
+              } @else {
+                <span class="metrica-card__valor">—</span>
+              }
+            </div>
+
+            <div class="metrica-card">
+              <span class="metrica-card__label">
+                Fecha de análisis
+              </span>
+
+              @if (resultado; as resultadoActual) {
+                <span class="metrica-card__valor">
+                  {{
+                    resultadoActual.procesado_en
+                      | date:'dd/MM/yyyy HH:mm'
+                  }}
+                </span>
+              } @else {
+                <span class="metrica-card__valor">—</span>
+              }
+            </div>
+
+            <div class="metrica-card">
+              <span class="metrica-card__label">
+                Archivo original
+              </span>
+
+              <span class="metrica-card__valor">
+                {{ estudioActual.nombre_archivo_original ?? '—' }}
+              </span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Interpretación -->
+        @if (resultado; as resultadoActual) {
+          @if (resultadoActual.interpretacion) {
+            <div
+              class="interpretacion"
+              [class.interpretacion--tb]="resultadoActual.label === 'TB'"
+              [class.interpretacion--normal]="resultadoActual.label === 'NORMAL'"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="18"
+                height="18"
+                fill="none"
+              >
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="9"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+
+                <path
+                  d="M12 8v4m0 4h.01"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+              </svg>
+
+              <p>{{ resultadoActual.interpretacion }}</p>
+            </div>
+          }
+        }
+
+      </section>
+    }
+  }
+
+</main>

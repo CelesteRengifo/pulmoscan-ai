@@ -1,0 +1,191 @@
+<app-navbar />
+
+<main class="diagnostico">
+
+  <!-- DATOS DEL PACIENTE -->
+  <section class="paciente">
+    <div class="paciente__head">
+      <h2 class="seccion-titulo">DATOS DEL PACIENTE</h2>
+      <button class="btn btn--primario" (click)="mostrarModal.set(true)">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none">
+          <path d="M12 5v14m-7-7h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        Nuevo diagnóstico
+      </button>
+    </div>
+
+    @if (paciente(); as p) {
+      <article class="ficha">
+        <header class="ficha__header">
+          <div class="ficha__avatar">{{ iniciales }}</div>
+          <div class="ficha__id">
+            <h3>{{ p.nombres }} {{ p.apellidos }}</h3>
+            <span>Paciente registrado</span>
+          </div>
+        </header>
+
+        <div class="ficha__grid">
+          <div class="campo">
+            <span class="campo__label">Documento</span>
+            <span class="campo__valor">
+              {{ p.tipo_documento ? p.tipo_documento + ' · ' + p.numero_documento : '—' }}
+            </span>
+          </div>
+          <div class="campo">
+            <span class="campo__label">Fecha nac.</span>
+            <span class="campo__valor">{{ fechaNacimientoFmt }}</span>
+          </div>
+          <div class="campo">
+            <span class="campo__label">Edad</span>
+            <span class="campo__valor">{{ edad }}</span>
+          </div>
+          <div class="campo">
+            <span class="campo__label">Sexo</span>
+            <span class="campo__valor">
+              {{ p.sexo === 'F' ? 'Femenino' : p.sexo === 'M' ? 'Masculino' : '—' }}
+            </span>
+          </div>
+        </div>
+      </article>
+    } @else {
+      <article class="ficha ficha--vacia">
+        <svg viewBox="0 0 24 24" width="26" height="26" fill="none">
+          <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M4.5 20c0-3.3 3.4-5.5 7.5-5.5s7.5 2.2 7.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        <p>Ningún paciente seleccionado</p>
+      </article>
+    }
+  </section>
+
+  <!-- CONTENIDO -->
+  <div class="contenido">
+
+    <!-- RADIOGRAFÍA -->
+    <section class="col-rx">
+      <h2 class="seccion-titulo">RADIOGRAFÍA</h2>
+      <div class="rx-caja">
+        @if (imagenPreview()) {
+          <img [src]="imagenPreview()!" alt="Radiografía de tórax" class="rx-imagen">
+        } @else {
+          <div class="rx-vacio">
+            <svg viewBox="0 0 24 24" width="52" height="52" fill="none">
+              <rect x="3" y="3" width="18" height="18" rx="3" stroke="#C5CDE0" stroke-width="1.5"/>
+              <circle cx="9" cy="9" r="2" stroke="#C5CDE0" stroke-width="1.5"/>
+              <path d="m21 15-4-4-10 10" stroke="#C5CDE0" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <p>Sin radiografía cargada</p>
+          </div>
+        }
+      </div>
+    </section>
+
+    <!-- RESULTADOS -->
+    <section class="col-resultados">
+      <h2 class="seccion-titulo">RESULTADOS</h2>
+
+      <div class="card-resultado">
+        @if (!prediccion()) {
+          <div class="vacio">
+            <app-pulmon estado="neutro" width="170px" />
+            <div class="vacio__texto">
+              <h3>Sin análisis</h3>
+              <p>Primero debes subir una radiografía de tórax para iniciar el análisis.</p>
+              <button class="btn btn--ghost" (click)="mostrarModal.set(true)">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none">
+                  <path d="M12 5v14m-7-7h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                Nuevo diagnóstico
+              </button>
+            </div>
+          </div>
+
+        } @else {
+          <div class="resultado">
+            <div class="resultado__pulmon">
+              <app-pulmon [estado]="estadoPulmon" width="170px" />
+            </div>
+
+            <div class="resultado__info">
+              <span class="badge"
+                    [class.badge--tb]="prediccion()!.label === 'TB'"
+                    [class.badge--normal]="prediccion()!.label === 'NORMAL'">
+                @if (prediccion()!.label === 'TB') {
+                  <svg viewBox="0 0 24 24" width="19" height="19" fill="none">
+                    <path d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                  POSITIVO
+                } @else {
+                  <svg viewBox="0 0 24 24" width="19" height="19" fill="none">
+                    <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+                    <path d="m8.5 12 2.5 2.5 4.5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  NEGATIVO
+                }
+              </span>
+
+              <div class="prob">
+                <div class="prob__top">
+                  <h3 class="prob__titulo">Probabilidad de TB</h3>
+                  <span class="prob__valor"
+                        [class.texto--tb]="prediccion()!.label === 'TB'"
+                        [class.texto--normal]="prediccion()!.label === 'NORMAL'">
+                    {{ probabilidadTB }}%
+                  </span>
+                </div>
+                <div class="prob__barra">
+                  <div class="prob__fill"
+                       [class.prob__fill--tb]="prediccion()!.label === 'TB'"
+                       [class.prob__fill--normal]="prediccion()!.label === 'NORMAL'"
+                       [style.width.%]="probabilidadTB">
+                  </div>
+                </div>
+              </div>
+
+              <span class="confianza-chip">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none">
+                  <path d="M12 3l7 3v5c0 4.2-2.9 8-7 10-4.1-2-7-5.8-7-10V6l7-3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+                </svg>
+                Confianza: {{ prediccion()!.confidence_level }}
+              </span>
+
+              <button class="btn btn--ghost" (click)="irADetalles()">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none">
+                  <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/>
+                  <path d="M12 11v5m0-8h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                Más detalles
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+
+      @if (prediccion()) {
+        <div class="indicacion"
+             [class.indicacion--tb]="prediccion()!.label === 'TB'"
+             [class.indicacion--normal]="prediccion()!.label === 'NORMAL'">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M12 8v4m0 4h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <p>{{ indicacion }}</p>
+        </div>
+
+        <button class="btn btn--suave" (click)="descargarReporte()" [disabled]="!prediccion()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none">
+            <path d="M12 3v12m0 0-4-4m4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          Descargar reporte
+        </button>
+      }
+    </section>
+  </div>
+</main>
+
+@if (mostrarModal()) {
+  <app-nuevo-diagnostico-modal
+    (cerrar)="mostrarModal.set(false)"
+    (resultado)="onResultado($event)" />
+}

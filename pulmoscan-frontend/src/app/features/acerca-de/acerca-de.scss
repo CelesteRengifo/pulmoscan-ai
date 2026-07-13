@@ -1,0 +1,535 @@
+.acerca {
+  min-height: calc(100vh - 64px);
+  background: #F0F4F8;
+  padding: 2rem 2.25rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+/* ---------- Banner ---------- */
+.banner {
+  background: linear-gradient(120deg, #0A1F5C 0%, #16337F 100%);
+  border-radius: 16px;
+  padding: 2rem 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -40px;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+
+  &__texto {
+    z-index: 1;
+
+    h1 {
+      margin: 0 0 0.5rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: #B9C6E8;
+      max-width: 500px;
+      line-height: 1.6;
+    }
+  }
+
+  &__stats {
+    display: flex;
+    gap: 1rem;
+    z-index: 1;
+    flex-shrink: 0;
+  }
+}
+
+.stat-card {
+  background: rgba(255,255,255,0.15);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 14px;
+  padding: 1rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 110px;
+
+  &__valor {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #fff;
+  }
+
+  &__label {
+    font-size: 0.75rem;
+    color: #B9C6E8;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+}
+
+/* ---------- Fila 2 ---------- */
+.fila-2 {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 1.75rem;
+}
+
+/* ---------- Cards base ---------- */
+.card {
+  background: #fff;
+  border: 1px solid #E1E7F2;
+  border-radius: 16px;
+  padding: 1.75rem;
+  box-shadow: 0 4px 20px rgba(10,31,92,0.06);
+
+  &__titulo {
+    margin: 0 0 0.3rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0A1F5C;
+  }
+
+  &__sub {
+    margin: 0 0 1.25rem;
+    font-size: 0.82rem;
+    color: #9AA6BF;
+  }
+
+  &--oscuro {
+    background: #0F1E4A;
+    border-color: #1A2F6E;
+  }
+
+  &--metricas { }
+
+  &__titulo--blanco {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 1.25rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+  }
+}
+
+/* ---------- Matriz ---------- */
+.matriz {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  &__cabecera {
+    display: grid;
+    grid-template-columns: 80px 1fr 1fr;
+    gap: 0.5rem;
+    padding-left: 0;
+  }
+
+  &__label-col {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #6B7A99;
+    text-align: center;
+  }
+
+  &__fila {
+    display: grid;
+    grid-template-columns: 80px 1fr 1fr;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  &__label-fila {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #6B7A99;
+    text-align: right;
+    padding-right: 0.5rem;
+  }
+
+  &__celda {
+    border-radius: 10px;
+    padding: 0.85rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+
+    &--vn { background: rgba(26,122,74,0.12); }
+    &--fp { background: rgba(192,57,43,0.12); }
+    &--fn { background: rgba(192,57,43,0.12); }
+    &--vp { background: rgba(26,122,74,0.12); }
+  }
+
+  &__eje {
+    margin: 0.25rem 0 0;
+    font-size: 0.75rem;
+    color: #9AA6BF;
+    text-align: right;
+  }
+}
+
+.celda__valor {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #1A2540;
+}
+
+.celda__tag {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #6B7A99;
+  letter-spacing: 0.05em;
+}
+
+/* ---------- Métricas grid ---------- */
+.metricas-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 1.5rem;
+}
+
+.metrica {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #EEF1F7;
+
+  &__label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #94A0BC;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  &__valor {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #1A2540;
+
+    &--grande { font-size: 1.5rem; color: #0A1F5C; }
+    &--pequeño { font-size: 0.85rem; font-weight: 500; }
+  }
+}
+
+/* ---------- Pipeline ---------- */
+.pipeline-section {
+  background: #0F1E4A;
+  border-radius: 16px;
+  padding: 2rem 2.5rem;
+
+  &__titulo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0 0 2rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #fff;
+  }
+}
+
+.pipeline-pasos {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  margin-bottom: 2rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.pipeline-paso {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  position: relative;
+  flex: 1;
+  min-width: 100px;
+
+  &--activo .paso-circulo {
+    background: #4A90D9;
+    box-shadow: 0 0 0 4px rgba(74,144,217,0.3);
+  }
+}
+
+.paso-circulo {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  border: 2px solid rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  transition: background 0.2s, box-shadow 0.2s;
+  position: relative;
+  z-index: 1;
+}
+
+.paso-linea {
+  position: absolute;
+  top: 22px;
+  left: calc(50% + 22px);
+  right: calc(-50% + 22px);
+  height: 2px;
+  background: rgba(255,255,255,0.15);
+  z-index: 0;
+
+  &--activa { background: #4A90D9; }
+}
+
+.paso-titulo {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #fff;
+  text-align: center;
+}
+
+.paso-sub {
+  font-size: 0.72rem;
+  color: #7A93C8;
+  text-align: center;
+}
+
+.pipeline-desc {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+
+  &__numero {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #4A90D9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  &__texto {
+    h3 {
+      margin: 0 0 0.4rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.88rem;
+      color: #B9C6E8;
+      line-height: 1.6;
+    }
+  }
+}
+
+/* ---------- Fila 4 ---------- */
+.fila-4 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.75rem;
+}
+
+/* ---------- Datasets ---------- */
+.datasets {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.dataset-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__nombre {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  &__detalle {
+    font-size: 0.75rem;
+    color: #7A93C8;
+  }
+}
+
+.dataset-badge {
+  background: rgba(74,144,217,0.2);
+  color: #7AB8F5;
+  border: 1px solid rgba(74,144,217,0.35);
+  border-radius: 99px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.datasets-total {
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+
+  span { font-size: 0.82rem; color: #B9C6E8; }
+}
+
+.split-bar {
+  display: flex;
+  height: 8px;
+  border-radius: 99px;
+  overflow: hidden;
+  gap: 2px;
+
+  &__seg {
+    height: 100%;
+    &--train { background: #1A7A4A; }
+    &--val   { background: #4A90D9; }
+    &--test  { background: #C0392B; }
+  }
+}
+
+.split-leyenda {
+  display: flex;
+  gap: 1rem;
+
+  span {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    color: #7A93C8;
+  }
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+
+  &--train { background: #1A7A4A; }
+  &--val   { background: #4A90D9; }
+  &--test  { background: #C0392B; }
+}
+
+//EQUIPO
+.equipo-avatares {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+  justify-content: center;
+}
+
+.avatar-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(74,144,217,0.25);
+  border: 2px solid rgba(74,144,217,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #7AB8F5;
+}
+
+.avatar__nombre {
+  font-size: 0.85rem;
+  color: #B9C6E8;
+  text-align: center;
+  max-width: 120px;
+  line-height: 1.25;
+  font-weight: 500;
+}
+
+.avatar__apellido {
+  font-size: 0.82rem;
+  color: #7A93C8;
+  text-align: center;
+}
+
+.institucion {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 1.5rem;
+  text-align: center;
+
+  svg { color: #7A93C8; }
+
+  &__nombre {
+    margin: 0 0 4px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  &__sub {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #7A93C8;
+  }
+}

@@ -1,0 +1,225 @@
+<app-navbar />
+
+<main class="acerca">
+
+  <!-- BANNER -->
+  <section class="banner">
+    <div class="banner__texto">
+      <h1>PulmoScan AI</h1>
+      <p>Sistema de detección automatizada de tuberculosis pulmonar mediante fine-tuning de DenseNet169 sobre radiografías de tórax.</p>
+    </div>
+    <div class="banner__stats">
+      @if (metricas()) {
+        <div class="stat-card">
+          <span class="stat-card__valor">{{ fmt(metricas()!.test_1.auc) }}</span>
+          <span class="stat-card__label">AUC-ROC</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card__valor">{{ metricas()!.best_epoch }}</span>
+          <span class="stat-card__label">Épocas</span>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- MATRIZ + MÉTRICAS -->
+  <div class="fila-2">
+
+    <!-- Matriz de confusión -->
+    <article class="card">
+      <h2 class="card__titulo">Matriz de confusión</h2>
+      <p class="card__sub">Predicción del modelo</p>
+
+      @if (metricas(); as m) {
+        <div class="matriz">
+          <div class="matriz__cabecera">
+            <span></span>
+            <span class="matriz__label-col">Normal</span>
+            <span class="matriz__label-col">TB+</span>
+          </div>
+          <div class="matriz__fila">
+            <span class="matriz__label-fila">Normal ×</span>
+            <div class="matriz__celda matriz__celda--vn">
+              <span class="celda__valor">{{ m.test_1.tn }}</span>
+              <span class="celda__tag">VN</span>
+            </div>
+            <div class="matriz__celda matriz__celda--fp">
+              <span class="celda__valor">{{ m.test_1.fp }}</span>
+              <span class="celda__tag">FP</span>
+            </div>
+          </div>
+          <div class="matriz__fila">
+            <span class="matriz__label-fila">TB+ ×</span>
+            <div class="matriz__celda matriz__celda--fn">
+              <span class="celda__valor">{{ m.test_1.fn }}</span>
+              <span class="celda__tag">FN</span>
+            </div>
+            <div class="matriz__celda matriz__celda--vp">
+              <span class="celda__valor">{{ m.test_1.tp }}</span>
+              <span class="celda__tag">VP</span>
+            </div>
+          </div>
+          <p class="matriz__eje">Real →</p>
+        </div>
+      }
+    </article>
+
+    <!-- Métricas -->
+    <article class="card card--metricas">
+      <h2 class="card__titulo">Métricas del modelo</h2>
+
+      @if (metricas(); as m) {
+        <div class="metricas-grid">
+          <div class="metrica">
+            <span class="metrica__label">AUC-ROC</span>
+            <span class="metrica__valor metrica__valor--grande">{{ fmt(m.test_1.auc) }}</span>
+          </div>
+          <div class="metrica">
+            <span class="metrica__label">F1-score</span>
+            <span class="metrica__valor metrica__valor--grande">{{ m.test_1.f1 }}</span>
+          </div>
+          <div class="metrica">
+            <span class="metrica__label">Sensibilidad</span>
+            <span class="metrica__valor">{{ pct(m.test_1.sensitivity) }}</span>
+          </div>
+          <div class="metrica">
+            <span class="metrica__label">Especificidad</span>
+            <span class="metrica__valor">{{ pct(m.test_1.specificity) }}</span>
+          </div>
+          <div class="metrica">
+            <span class="metrica__label">Precisión</span>
+            <span class="metrica__valor">{{ pct(m.test_1.precision) }}</span>
+          </div>
+          <div class="metrica">
+            <span class="metrica__label">Balanced Acc.</span>
+            <span class="metrica__valor">{{ pct(m.test_1.balanced_accuracy) }}</span>
+          </div>
+          <div class="metrica">
+            <span class="metrica__label">Threshold</span>
+            <span class="metrica__valor">{{ m.threshold }}</span>
+          </div>
+          <div class="metrica">
+            <span class="metrica__label">Regla threshold</span>
+            <span class="metrica__valor metrica__valor--pequeño">{{ m.threshold_rule }}</span>
+          </div>
+          <div class="metrica">
+            <span class="metrica__label">Backbone</span>
+            <span class="metrica__valor">{{ m.backbone }}</span>
+          </div>
+          <div class="metrica">
+            <span class="metrica__label">Segmentación</span>
+            <span class="metrica__valor metrica__valor--pequeño">{{ m.lung_segmentation_mode }}</span>
+          </div>
+        </div>
+      }
+    </article>
+  </div>
+
+  <!-- PIPELINE -->
+  <section class="pipeline-section">
+    <h2 class="pipeline-section__titulo">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none">
+        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Pipeline de procesamiento
+    </h2>
+
+    <div class="pipeline-pasos">
+      @for (paso of pipeline; track paso.titulo; let i = $index) {
+        <div class="pipeline-paso" [class.pipeline-paso--activo]="pasoActivo() === i" (click)="pasoActivo.set(i)">
+          <div class="paso-circulo">
+            <span>{{ i + 1 }}</span>
+          </div>
+          @if (i < pipeline.length - 1) {
+            <div class="paso-linea" [class.paso-linea--activa]="pasoActivo() > i"></div>
+          }
+          <span class="paso-titulo">{{ paso.titulo }}</span>
+          <span class="paso-sub">{{ paso.subtitulo }}</span>
+        </div>
+      }
+    </div>
+
+    <div class="pipeline-desc">
+      <div class="pipeline-desc__numero">{{ pasoActivo() + 1 }}</div>
+      <div class="pipeline-desc__texto">
+        <h3>{{ pipeline[pasoActivo()].titulo }}</h3>
+        <p>{{ pipeline[pasoActivo()].descripcion }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DATASETS + EQUIPO -->
+  <div class="fila-4">
+
+    <!-- Datasets -->
+    <article class="card card--oscuro">
+      <h2 class="card__titulo--blanco">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none">
+          <ellipse cx="12" cy="5" rx="9" ry="3" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3" stroke="currentColor" stroke-width="1.8"/>
+        </svg>
+        Conjuntos de datos
+      </h2>
+
+      <div class="datasets">
+        @for (ds of datasets; track ds.nombre) {
+          <div class="dataset-item">
+            <div class="dataset-item__info">
+              <span class="dataset-item__nombre">{{ ds.nombre }}</span>
+              <span class="dataset-item__detalle">{{ ds.detalle }}</span>
+            </div>
+            <span class="dataset-badge">Público</span>
+          </div>
+        }
+      </div>
+
+      <div class="datasets-total">
+        <span>Total: 5,860 imágenes</span>
+        <div class="split-bar">
+          <div class="split-bar__seg split-bar__seg--train" style="width:70%"></div>
+          <div class="split-bar__seg split-bar__seg--val" style="width:15%"></div>
+          <div class="split-bar__seg split-bar__seg--test" style="width:15%"></div>
+        </div>
+        <div class="split-leyenda">
+          <span><i class="dot dot--train"></i>Entrenamiento</span>
+          <span><i class="dot dot--val"></i>Validación</span>
+          <span><i class="dot dot--test"></i>Prueba</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- Equipo -->
+    <article class="card card--oscuro">
+      <h2 class="card__titulo--blanco">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        Equipo de investigación
+      </h2>
+
+      <div class="equipo-avatares">
+        @for (m of equipo; track m.iniciales) {
+          <div class="avatar-wrap">
+            <div class="avatar">{{ m.iniciales }}</div>
+            <span class="avatar__nombre">{{ m.nombre }}<br>{{ m.apellido }}</span>
+          </div>
+        }
+      </div>
+
+      <div class="institucion">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M9 22V12h6v10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <div>
+          <p class="institucion__nombre">Universidad Nacional de la Amazonía Peruana</p>
+          <p class="institucion__sub">Facultad de Ingeniería de Sistemas e Informática · IA 2026-I</p>
+        </div>
+      </div>
+    </article>
+  </div>
+
+</main>
